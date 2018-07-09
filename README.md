@@ -1,2 +1,2 @@
 # one-two
-writing a bit about meself
+Project over sentiment analysis algorithms, solving subject referencing problems with skipgram.
