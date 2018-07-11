@@ -1,32 +1,19 @@
 #download.file("https://snap.stanford.edu/data/finefoods.txt.gz", "finefoods.txt.gz")
 library(readr)
 library(stringr)
-library(coreNLP)
 #reviews<-read_lines("finefoods.txt.gz") 
 #reviews<-reviews[str_sub(reviews, 1, 12) == "review/text:"]
 #reviews<-str_sub(reviews, start = 14)
 #reviews<-iconv(reviews, to = "UTF-8")
 #head(reviews, 2)
-# update to newest version of the package
-devtools::install_github("statsmaths/coreNLP")
-# download base library (mandatory):
-coreNLP::downloadCoreNLP()
-# download desired language library:
-coreNLP::downloadCoreNLP(type="spanish")
-# attach package
-library(coreNLP)
-# run initCoreNLP specifying your language of choice
-initCoreNLP(type="spanish")
-
 setwd("C:/Users/Alex/Documents/Sentiment_Analysis/Corpus")
-filename<-"skipgram_text_input.txt"
+filename<-"TrainCorpus_D.txt"
 skipo<-paste(scan(filename,what="character",sep=NULL),collapse=" ")
 Encoding(skipo)<-"UTF-8"
 skipo<-gsub(pattern="NA",replacement="",skipo,fixed=TRUE)
 
-
 library(keras)
-tokenizer<-text_tokenizer(num_words=200)
+tokenizer<-text_tokenizer(num_words=300) ### 300 pierde precisio###
 tokenizer%>%fit_text_tokenizer(skipo)
 
 library(reticulate)
@@ -82,8 +69,10 @@ summary(model)
 model %>%
   fit_generator(
     skipgrams_generator(skipo, tokenizer, skip_window, negative_samples), 
-    steps_per_epoch=1000,epochs=1
+    steps_per_epoch=1000,epochs=3
   )
+##### 1000 y 3#######
+
 
 library(dplyr)
 
@@ -109,8 +98,8 @@ find_similar_words <- function(word, embedding_matrix, n = 5) {
   similarities[,1] %>% sort(decreasing = TRUE) %>% head(n)
 }
 
-find_similar_words("2", embedding_matrix)
-find_similar_words("evo", embedding_matrix)
+find_similar_words("9929", embedding_matrix) ###evo morales
+find_similar_words("9954", embedding_matrix) ###La Roja
 find_similar_words("chile", embedding_matrix)
 find_similar_words("presidente", embedding_matrix)
 ##################################################################### Entregra resultados##############################################
